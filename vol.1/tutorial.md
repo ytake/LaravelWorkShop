@@ -429,7 +429,15 @@ public function rules()
 }
 ```
 
-先ほどのform.blade.phpに
+コントローラのconfirmメソッドを以下のように記述します
+```php
+public function postConfirm(HomeRequest $home)
+{
+    return view('confirm');
+}
+```
+
+次に先ほどのform.blade.phpに
 ```php
 {{$errors->first('name')}}
 ```
