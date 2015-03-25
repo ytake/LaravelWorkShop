@@ -1,0 +1,37 @@
+{
+  "name": "tutorial",
+  "version": "0.0.1",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "*",
+    "bootstrap-material-design": "*",
+    "jquery": "*"
+  },
+  "exportsOverride": {
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "**/*.min.css",
+        "**/*.min.js",
+        "**/glyphicons-*"
+      ]
+    },
+    "jquery": {
+      "main": "**/*.min.js"
+    },
+    "bootstrap-material-design": {
+      "main": [
+        "**/*.min.js",
+        "**/*.min.css",
+        "**/Material-*"
+      ]
+    }
+  }
+}

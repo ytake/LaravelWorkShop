@@ -85,3 +85,30 @@ Laravel5移行時に戸惑うのはこの名前空間利用だと思いますが
 利用用途に合わせてユーザーが自由に選択することができます。
 
 # Laravel4からの移行方法
+psr-4に従って、namespaceを利用する場合は、  
+これまで実装してきたクラスにnamespaceをつけ、任意のディレクトリに置くだけです。  
+
+namespaceを利用せずに移行したい場合は、上記のcomposer.jsonのオートローダについてを思い出してください  
+下記のようにするとスムーズです  
+
+```json
+"autoload": {
+  "classmap": [
+    "database",
+    "app/Console/Commands",
+    "app/Http/Controllers",
+    "app/Models"
+  ],
+  "psr-4": {
+    "App\\": "app/"
+  }
+}
+```
+
+##注意！
+フィルターをそのまま利用することも可能ですが、ミドルウェアへの移行はそこまで大変なものではありません。  
+
+HTML, Formといったヘルパーは5で除外されました。  
+そのまま利用したい方は、http://laravelcollective.com/docs/5.0/html をインストールしてください。
+
+その他の移行ポイントを紹介します。  
