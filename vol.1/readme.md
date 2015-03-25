@@ -8,7 +8,7 @@ Laravel5を初めて使う方や、他のフレームワークを利用したこ
 | メニュー | タイトル |
 |:-----------|------------|
 | 1 | [composer, Laravel4からの移行方法とpsr-4, classmap解説](https://github.com/ytake/LaravelWorkShop/blob/master/vol.1/migrate.md) |
-| 2 | 簡単なアプリケーション開発(フォームリクエスト、ミドルウェア) |
+| 2 | [簡単なアプリケーション開発(フォームリクエスト、ミドルウェア)](https://github.com/ytake/LaravelWorkShop/blob/master/vol.1/tutorial.md) |
 | 3 | サービスコンテナと新機能解説 |
 | 4 | Tips(認証周りや、データベースまわり、機能拡張など) |
 
