@@ -4,14 +4,15 @@ Laravel5で追加された機能を使い、まずは簡単なアプリケーシ
 今回もビルトインサーバで動かすので、apache, nginxなどのwebサーバは不要です  
 
 #目次
-[composerインストール](#composerインストール)
+[composerインストール](#composerインストール)  
 [Laravel5インストール](#Laravel5インストール)  
 [helloLaravel](#hellolaravel)  
 [はじめてのルーターLaravel5](#はじめてのルーターLaravel5)  
 [はじめてのコントローラーLaravel5](#はじめてのコントローラーLaravel5)  
 [はじめてのビューLaravel5](#はじめてのビューLaravel5)  
-[はじめてのフォームリクエストLaravel5](#はじめてのフォームリクエストLaravel5)  
-[はじめてのミドルウェアLaravel5](#はじめてのミドルウェアLaravel5)  
+[はじめてのフォームリクエスト](#はじめてのフォームリクエスト)  
+[はじめてのミドルウェア](#はじめてのミドルウェア)  
+[はじめてのエラーハンドリング](#はじめてのエラーハンドリング)
 
 ## composerインストール
 ```bash
@@ -151,9 +152,6 @@ $ php artisan route:list
 ```
 で確認できます  
 
-ここまでがLaravel4と同様です。  
-Laravel5で追加されたものに置き換えてみましょう。  
-
 ### GET
 ```php
 get('/', function () {
@@ -167,6 +165,19 @@ post('/', function () {
 });
 ```
 同様にdelete, put, patchがあります。  
+
+###group
+利用する機会が多いのがこのグループによるルーティングです。  
+
+```php
+\Route::group(['prefix' => 'v1'], function () {
+    resource('api', 'ApiController');
+});
+```
+この例では、グループのクロージャ内で記述されたルーティングに  
+prefixにv1を付与させてuriを作成します。  
+上記の場合は、`v1/api` がベースのURIになり 名前付きルーティングで `v1.api.` が自動で付与されます。
+このほかにも認証などをグループで指定したり様々な方法で多様なルーティングを作成することができます。
 
 ###routerとview
 bladeテンプレートを使って同じ事をしてみましょう  
@@ -205,6 +216,16 @@ router.phpは先ほどものを以下の様に変更します
 ```
 コントローラー要らずで、小さいアプリケーション等はこれだけでも十分実装できます
 
+###ルーティングへのアクセス
+名前付きルーティングで作成されたものは、
+```php
+route('v1.api.index');
+```
+名前が付いていないルーティングへは、
+```php
+action('ApiController@index');
+```
+
 ##はじめてのコントローラーLaravel5
 Laravel5の新機能を利用するため、以下の簡単なコントローラを作成します。
 
@@ -213,6 +234,11 @@ namespace App\Http\Controllers;
 
 class HomeController extends Controller
 {
+
+    public function getIndex()
+    {
+        return "home";
+    }
 
     public function getForm()
     {
@@ -240,7 +266,7 @@ routes.phpには以下のように記述します。
 ```
 
 `App\Http\Controllers`は、`RouteServiceProvider`ですでに記述されていますので書きません。  
-Laravel4のアプリケーションを移行する場合は、  
+Laravel4のアプリケーションを移行する場合に名前空間を利用したくない場合は、  
 ```php
 protected $namespace = null;
 ```
@@ -266,7 +292,7 @@ public function getForm()
 ```
 URLは http://localhost:8000/form です
 
-ビューはレイアウト用のファイルを作り、継承して利用するようにします
+ビューはレイアウト用のファイルを作り、継承して利用するようにします  
 **resources/views/layouts/default.blade.php** として作成します
 ```php
 <!DOCTYPE html>
@@ -434,15 +460,132 @@ public function messages()
  */
 public function postApply(HomeRequest $request)
 {
-    if($request->'_return') {
-        return redirect('/form')
-            ->withInput($request->only('name'));
-    }
-    \Session::forget('_token');
-    return view('apply');
+  if ($request->_return) {
+      return redirect('/form')
+          ->withInput($request->only('name'));
+  }
+  return view('apply');
 }
 ```
 リクエストクラスは、配列またはオブジェクトでアクセスすることができます。  
 これでフォームの一連の動きができました
 
 ##はじめてのミドルウェア
+簡単なミドルウェアを追加してみましょう。  
+Laravel4で利用されていたフィルターが置き換わったものと考えていただいて構いません。  
+移行編で述べたようにこれまでのフィルターを利用する事もできます  
+
+ミドルウェアには、次の2種類があります
+* グローバルミドルウェア:アプリケーション全体の動作を確定させるミドルウェア
+* ルーティングミドルウェア:指定のルーティングにのみ作用するミドルウェア(Laravel4のフィルターと同様)
+
+上記のミドルウェアはそれぞれ実行されるタイミングが異なります。  
+グローバルミドルウェアは、ルーティングが決定される前に実行されます。  
+このため、Routeファサードなどを利用したりして、特定のルーティングにのみ作用するような仕組みは実装できません。  
+
+ルーティングミドルウェアは、ルーティングが決定されたあとに実行されますので、  
+特定の処理を実装することが可能です。  
+
+実行されるイベントはサービスプロバイダや任意の場所で下記のように記述すると取得できます。
+```php
+\Event::listen('*', function() {
+   var_dump(\Event::firing());
+});
+
+```
+
+下記のコマンドでミドルウェアを追加してみましょう。  
+今回はルーティングで作用する簡単なものを追加します。  
+```bash
+$ php artisan make:middleware HomeMiddleware
+```
+
+作成後、routes.phpを下記のように変更します。
+```php
+\Route::group(['middleware' => 'home'], function() {
+    \Route::controller("/", "HomeController");
+});
+```
+
+app/Http/Kernel.phpもあわせて下記のように追記します。  
+```php
+protected $routeMiddleware = [
+  'auth' => 'App\Http\Middleware\Authenticate',
+  'auth.basic' => 'Illuminate\Auth\Middleware\AuthenticateWithBasicAuth',
+  'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
+  'home' => 'App\Http\Middleware\HomeMiddleware'
+];
+```
+
+下記のコマンドでミドルウェアなどが有効になっているか確認できます
+```bash
+$ php artisan route:list
+```
+
+ミドルウェアのメソッドは下記のように用意されています
+```php
+public function handle($request, Closure $next)
+{
+    return $next($request);
+}
+```
+
+リターンの前に実行されるものが、コントローラ実行の前に処理されます。
+コントローラ実行後にミドルウェアを実行したい場合は、下記のようにしましょう。  
+
+```php
+public function handle($request, Closure $next)
+{
+    // コントローラの前で実行されます
+    $middleware = $next($request);
+    // コントローラの後で実行されます
+    return $middleware;
+}
+```
+
+今回は実行前に動作するものを実装します。  
+現在ルーティングに使用しているコントローラーは、自動的に  
+`form/{one?}/{two?}/{three?}/{four?}/{five?}`  
+という形で引数を利用することができます。  
+引数がある場合には処理をしないような、簡単な制御を加えます。  
+
+```php
+namespace App\Http\Middleware;
+
+use Closure;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
+class HomeMiddleware
+{
+
+    public function handle($request, Closure $next)
+    {
+        if(!is_null(\Route::input('one'))) {
+            throw new AccessDeniedHttpException;
+        }
+        return $next($request);
+    }
+}
+```
+
+http://localhost:8000/form/test へアクセスしてみましょう！  
+exceptionが投げられていれば実装完了です。  
+
+##はじめてのエラーハンドリング
+エラー処理は、 **app/Exceptions/Handler.php** で行います。  
+ステータスコードに対応したテンプレートを表示したい場合は、  
+views/errors ディレクトリに 500/blade.php などを用意して表示することができます。  
+今回はミドルウェアで投げられたエラーを簡単に処理するように追加します。  
+
+renderメソッドを下記のようにします。
+```php
+public function render($request, Exception $e)
+{
+    if($e instanceof AccessDeniedHttpException) {
+        return response("余計な引数があります", 400);
+    }
+    return parent::render($request, $e);
+}
+```
+フレームワークのエラー画面ではなく、任意の画面へ変更されたことを確認しましょう！  
+`$dontReport`配列に追加することでエラーログへ書き込まないようにすることができます。  
