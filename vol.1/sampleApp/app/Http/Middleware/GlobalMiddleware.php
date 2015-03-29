@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 use Closure;
 
 /**
+ * グローバルミドルウェアとして登録した例です。
+ * 実装はありません
+ *
  * Class GlobalMiddleware
  * @package App\Http\Middleware
  * @author yuuki.takezawa<yuuki.takezawa@comnect.jp.net>

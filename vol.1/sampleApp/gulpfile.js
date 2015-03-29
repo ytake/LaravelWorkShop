@@ -1,6 +1,7 @@
 var elixir = require('laravel-elixir'),
     gulp = require('gulp'),
     bower = require('bower'),
+    shell = require('gulp-shell'),
     notify = require('gulp-notify'),
     react = require('gulp-react'),
     uglify = require('gulp-uglify'),
@@ -8,10 +9,9 @@ var elixir = require('laravel-elixir'),
     gulpFilter = require('gulp-filter'),
     urlAdjuster = require('gulp-css-url-adjuster'),
     browserSync = require('browser-sync'),
+    plumber = require('gulp-plumber'),
     mainBowerFiles = require('main-bower-files');
-
 var assetsDir = elixir.config.assetsDir;
-
 
 elixir.extend('bowerInstall', function () {
     gulp.task('bower', function () {
@@ -65,25 +65,6 @@ elixir.extend('assetsPublish', function () {
     return this.queueTask("publish");
 });
 
-/**
- * browser reload
- * $ gulp browserSync
- */
-gulp.task('browserSync', function () {
-    browserSync({
-        open: true,
-        port: 3001,
-        proxy: "127.0.0.1:8000",
-        notify: false
-    });
-});
-/**
- * browser reload
- * $ gulp browserReload
- */
-gulp.task('browserReload', function () {
-    browserSync.reload();
-});
 
 elixir(function (mix) {
     mix.bowerInstall()

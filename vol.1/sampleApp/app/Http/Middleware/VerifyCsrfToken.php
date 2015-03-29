@@ -5,6 +5,8 @@ use Closure;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 
 /**
+ * csrfトークンを確認するミドルウェア
+ *
  * Class VerifyCsrfToken
  * @package App\Http\Middleware
  * @author yuuki.takezawa<yuuki.takezawa@comnect.jp.net>

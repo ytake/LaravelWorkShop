@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
     ];
 
     /**
+     * 新機能のスケジュール機能です。
      * Define the application's command schedule.
      *
      * @param  \Illuminate\Console\Scheduling\Schedule $schedule
@@ -29,9 +30,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // crontabへ記述するのと同様に記述します。
         $schedule->command('inspire')
             ->hourly();
-
+        // 実行内容をログとして保存したり、メールを送信したりすることができます
         $schedule->command('inspire')
             ->sendOutputTo(storage_path('app/output.log'))
             ->cron('* * * * * *');

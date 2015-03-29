@@ -5,6 +5,14 @@ use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\RedirectResponse;
 
+/**
+ * ログインしていないユーザがホーム画面へ遷移されるミドルウェアです。
+ * 本サンプルでは利用していません
+ *
+ * Class RedirectIfAuthenticated
+ * @package App\Http\Middleware
+ * @author yuuki.takezawa<yuuki.takezawa@comnect.jp.net>
+ */
 class RedirectIfAuthenticated
 {
 

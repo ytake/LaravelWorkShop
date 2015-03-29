@@ -16,6 +16,9 @@ class RouteServiceProvider extends ServiceProvider
      * This namespace is applied to the controller routes in your routes file.
      *
      * In addition, it is set as the URL generator's root namespace.
+     * ルーティング記述時に、namespaceを省略して記述することができます
+     * namespaceを利用しないclassmapをオートローダに利用する場合は不要なため、
+     * nullへ変更してください。
      *
      * @var string
      */
@@ -30,8 +33,6 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(Router $router)
     {
         parent::boot($router);
-
-        //
     }
 
     /**

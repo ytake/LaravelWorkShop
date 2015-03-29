@@ -2,6 +2,8 @@
 namespace App\Repositories;
 
 /**
+ * リポジトリ サンプルクラス
+ *
  * Class SampleRepository
  * @package App\Repositories
  * @author yuuki.takezawa<yuuki.takezawa@comnect.jp.net>

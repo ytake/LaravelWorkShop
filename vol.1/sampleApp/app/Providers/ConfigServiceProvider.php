@@ -22,7 +22,9 @@ class ConfigServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // 特定の環境時にのみ有効になるような処理を定義することができます。
         if ($this->app->environment("local")) {
+            // この場合は`local`環境時にのみ ide_helper生成が可能です
             $this->app->register('Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider');
         }
         config([

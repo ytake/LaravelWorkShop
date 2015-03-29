@@ -13,6 +13,7 @@ class BusServiceProvider extends ServiceProvider
 {
 
     /**
+     * コマンドバスのコマンド送信クラス、受信クラスとのマッピングを変更することができます
      * Bootstrap any application services.
      *
      * @param  \Illuminate\Bus\Dispatcher $dispatcher

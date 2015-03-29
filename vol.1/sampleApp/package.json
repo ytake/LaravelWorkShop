@@ -13,7 +13,6 @@
     "gulp-plumber": "*",
     "gulp-minify-css": "*",
     "gulp-css-url-adjuster": "*",
-    "browser-sync": "*",
     "gulp-uglify": "*"
   }
 }
