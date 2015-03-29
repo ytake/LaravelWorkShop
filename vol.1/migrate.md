@@ -112,3 +112,9 @@ HTML, Formといったヘルパーは5で除外されました。
 そのまま利用したい方は、http://laravelcollective.com/docs/5.0/html をインストールしてください。
 
 その他の移行ポイントを紹介します。  
+
+##Laravel5で名前空間を利用せずに開発したい場合のサンプル
+下記リポジトリの一部のコントローラーはclassmap利用で、  
+名前空間を使わないサンプルを含めてあります。  
+[Laravel5.BasicArchitecture](https://github.com/ytake/Laravel5.BasicArchitecture)  
+[composer.json サンプル](https://github.com/ytake/Laravel5.BasicArchitecture/blob/develop-basic/composer.json)
